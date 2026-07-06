@@ -1,0 +1,28 @@
+{
+  "appName": "PawsApp",
+  "tables": [
+    {
+      "name": "Mascotas",
+      "fields": {
+        "id": "String (Unique ID)",
+        "ownerEmail": "String",
+        "petName": "String",
+        "animalType": "String",
+        "breed": "String",
+        "petPhotoUrl": "String"
+      }
+    },
+    {
+      "name": "Vacunas",
+      "fields": {
+        "id": "String",
+        "petId": "String",
+        "vaccineName": "String",
+        "dateAdministered": "Date",
+        "nextDueDate": "Date",
+        "cardPhotoUrl": "String"
+      }
+    }
+  ]
+}
+
