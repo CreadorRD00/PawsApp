@@ -938,6 +938,7 @@ function renderCalendario(main){
         <div class="event-title">${icons[ev.type]||'📌'} ${escapeHtml(ev.title)}</div>
         <div class="event-sub">${ev.type||''}${ev.time? ' · 🕐 '+ev.time.slice(0,5):''}${ev.notes? ' · '+escapeHtml(ev.notes):''}</div>
         <div style="margin-top:6px;">
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Sincroniza este evento con tu calendario o agenda para tenerlo más presente</div>
           <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); addToCalendar('${ev.id}')">📲 Sincronizar con mi calendario</button>
         </div>
       </div>`;
