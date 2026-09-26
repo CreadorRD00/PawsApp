@@ -463,7 +463,9 @@ box.innerHTML = `
         <div class="auth-error" id="a-error"></div>
         <div class="auth-msg" id="a-msg"></div>
       `;
-      `;
+    document.getElementById('a-submit').onclick = doRegister;
+  }
+}
 
 async function doLogin(){
   const email = document.getElementById('a-email').value.trim();
