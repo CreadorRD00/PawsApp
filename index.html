@@ -1204,6 +1204,13 @@ function renderPerfil(main){
         📅 ${state.events.length} evento${state.events.length===1?'':'s'} en el calendario<br>
         🏪 ${state.sponsors.length} negocio${state.sponsors.length===1?'':'s'} patrocinador${state.sponsors.length===1?'':'es'}
       </div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:8px;">
+        <strong style="color:var(--ink)">¿Necesitas ayuda?</strong><br>
+        Escríbenos si tienes una pregunta o necesitas soporte
+      </div>
+      <button class="btn btn-outline btn-block" onclick="window.open('mailto:PawsApp.rd@gmail.com','_self')">✉️ PawsApp.rd@gmail.com</button>
     </div>`;
   refreshNotifButton();
 }
