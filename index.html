@@ -950,6 +950,7 @@ function openEventForm(id){
     <h3>${ev?'Editar evento':'Nuevo evento'}</h3>
     <div class="field"><label>Título</label><input id="e-title" value="${ev?escapeAttr(ev.title):''}" placeholder="Ej: Control anual"></div>
     <div class="field"><label>Fecha</label><input type="date" id="e-date" value="${ev?ev.date:''}"></div>
+    <div class="field"><label>Hora</label><input type="time" id="e-time" value="${ev&&ev.time?ev.time:''}"></div>
     <div class="field"><label>Tipo</label>
       <select id="e-type">
         ${['Cita veterinaria','Vacuna','Paseo','Reunión'].map(t=>`<option ${ev&&ev.type===t?'selected':''}>${t}</option>`).join('')}
