@@ -936,7 +936,10 @@ function renderCalendario(main){
       <div class="event-date-chip"><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString('es-ES',{month:'short'})}</div></div>
       <div style="flex:1">
         <div class="event-title">${icons[ev.type]||'📌'} ${escapeHtml(ev.title)}</div>
-        <div class="event-sub">${ev.type||''}${ev.notes? ' · '+escapeHtml(ev.notes):''}</div>
+        <div class="event-sub">${ev.type||''}${ev.time? ' · 🕐 '+ev.time.slice(0,5):''}${ev.notes? ' · '+escapeHtml(ev.notes):''}</div>
+        <div style="margin-top:6px;">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); addToCalendar('${ev.id}')">📲 Sincronizar con mi calendario</button>
+        </div>
       </div>`;
     div.onclick = ()=>openEventForm(ev.id);
     list.appendChild(div);
@@ -985,7 +988,28 @@ async function deleteEvent(id){
   await sb.from('events').delete().eq('id', id);
   closeModal(); await loadAll();
 }
-
+function addToCalendar(id){
+  const ev = state.events.find(e=>e.id===id);
+  if(!ev) return;
+  const d = ev.date.replace(/-/g,'');
+  let body = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\n';
+  body += `SUMMARY:${(ev.title||'').replace(/\n/g,' ')}\n`;
+  if(ev.time){
+    const t = ev.time.replace(':','').slice(0,4) + '00';
+    body += `DTSTART:${d}T${t}\n`;
+  }else{
+    body += `DTSTART;VALUE=DATE:${d}\n`;
+  }
+  if(ev.notes) body += `DESCRIPTION:${ev.notes.replace(/\n/g,' ')}\n`;
+  body += 'END:VEVENT\nEND:VCALENDAR';
+  const blob = new Blob([body], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (ev.title||'evento') + '.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 // ---------- Patrocinios (anuncios) ----------
 const SPONSOR_CATEGORIES = {
   'Veterinaria': '🩺',
