@@ -967,13 +967,14 @@ function openEventForm(id){
 async function saveEvent(id){
   const title = document.getElementById('e-title').value.trim();
   const date = document.getElementById('e-date').value;
+  const time = document.getElementById('e-time').value || null;
   const type = document.getElementById('e-type').value;
   const notes = document.getElementById('e-notes').value.trim();
   if(!title || !date){ alert('Completa el título y la fecha'); return; }
   if(id){
-    await sb.from('events').update({ title, date, type, notes }).eq('id', id);
+    await sb.from('events').update({ title, date, time, type, notes }).eq('id', id);
   }else{
-    const { error } = await sb.from('events').insert({ owner_id: currentOwnerId(), title, date, type, notes });
+    const { error } = await sb.from('events').insert({ owner_id: currentOwnerId(), title, date, time, type, notes });
     if(error){ alert('No se pudo guardar el evento: ' + error.message); return; }
   }
   closeModal(); await loadAll();
