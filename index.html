@@ -311,6 +311,21 @@ nav.tabbar button.active{ color: var(--primary); }
   border-radius:20px; background: var(--accent-soft); color:#8a5a12; margin-top:6px;
 }
 .profile-photo-big{ width:84px;height:84px;border-radius:50%; object-fit:cover; border:2.5px solid var(--primary); background:var(--primary-soft); }
+
+/* ---------- Inicio en mosaicos ---------- */
+.home-hero{ text-align:center; padding:26px 0 6px; }
+.home-hero .tag{ font-size:11px; font-weight:700; letter-spacing:2px; color:#12307A; margin-top:2px; }
+.tiles{ display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:14px 2px 6px; }
+.tile{ border:0; border-radius:22px; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:600; font-size:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; height:104px; cursor:pointer; box-shadow:0 6px 14px rgba(20,40,90,.18); }
+.tile.wide{ grid-column:1 / -1; height:84px; }
+.tile:active{ transform:scale(.98); }
+.back-btn{ background:none; border:none; color:var(--primary); font-family:'Karla',sans-serif; font-weight:700; font-size:14px; padding:6px 0 10px; cursor:pointer; }
+.rem-chip{ margin-left:auto; flex-shrink:0; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:20px; background:var(--primary-soft); color:var(--primary); }
+.rem-chip.due{ background:var(--alert-soft); color:var(--alert); }
+.rem-chip.soon{ background:var(--accent-soft); color:#8a5a12; }
+.menu-row{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px; margin-bottom:10px; font-family:'Karla',sans-serif; font-weight:700; font-size:14.5px; color:var(--ink); cursor:pointer; }
+.menu-row .ic{ font-size:20px; }
+.menu-row.danger{ color:var(--alert); border-color:var(--alert); margin-top:18px; }
 </style>
 </head>
 <body>
@@ -365,10 +380,7 @@ nav.tabbar button.active{ color: var(--primary); }
   <button class="fab" id="fab">+</button>
 
   <nav class="tabbar" id="tabbar">
-    <button data-tab="mascotas" class="tab-btn"><span class="ic">🐶</span>Mascotas</button>
-    <button data-tab="vacunas" class="tab-btn"><span class="ic">💉</span>Vacunas</button>
-    <button data-tab="calendario" class="tab-btn"><span class="ic">📅</span>Calendario</button>
-    <button data-tab="patrocinios" class="tab-btn"><span class="ic">🏪</span>Anuncios</button>
+    <button data-tab="inicio" class="tab-btn"><span class="ic">🏠</span>Inicio</button>
     <button data-tab="perfil" class="tab-btn"><span class="ic">👤</span>Perfil</button>
   </nav>
 </div>
@@ -385,7 +397,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---------- Estado ----------
 let state = {
-  tab: 'mascotas',
+  tab: 'inicio',
   pets: [],
   vaccines: [],
   events: [],
@@ -596,10 +608,7 @@ function main_loading(){
 function buildTabbar(){
   const tb = document.getElementById('tabbar');
   tb.innerHTML = `
-    <button data-tab="mascotas" class="tab-btn"><span class="ic">🐶</span>Mascotas</button>
-    <button data-tab="vacunas" class="tab-btn"><span class="ic">💉</span>Vacunas</button>
-    <button data-tab="calendario" class="tab-btn"><span class="ic">📅</span>Calendario</button>
-    <button data-tab="patrocinios" class="tab-btn"><span class="ic">🏪</span>Anuncios</button>
+    <button data-tab="inicio" class="tab-btn"><span class="ic">🏠</span>Inicio</button>
     ${state.isAdmin? `<button data-tab="usuarios" class="tab-btn"><span class="ic">🛡️</span>Usuarios</button>`:''}
     <button data-tab="perfil" class="tab-btn"><span class="ic">👤</span>Perfil</button>
   `;
@@ -661,8 +670,9 @@ function fileToCompressedDataUrl(file, maxW){
 
 // ---------- Render principal ----------
 function render(){
+  const barTab = ['inicio','usuarios','perfil'].includes(state.tab) ? state.tab : 'inicio';
   document.querySelectorAll('.tab-btn').forEach(b=>{
-    b.classList.toggle('active', b.dataset.tab === state.tab);
+    b.classList.toggle('active', b.dataset.tab === barTab);
   });
   const main = document.getElementById('main');
   if(!state.loaded){ main.innerHTML = '<div class="empty">Cargando…</div>'; return; }
@@ -670,15 +680,20 @@ function render(){
   const taglines = {
     mascotas: 'La cartilla de tus mascotas, siempre a mano',
     vacunas: 'Cada dosis, registrada y a tiempo',
-    calendario: 'Citas, paseos y refuerzos en un solo lugar',
+    calendario: 'Tu agenda: citas, paseos y refuerzos',
     patrocinios: 'Negocios de confianza para tu mascota',
+    inicio: 'La cartilla de tus mascotas, siempre a mano',
+    recordatorios: 'Lo que viene para tus mascotas',
+    mas: 'Más opciones',
     usuarios: 'Panel de administración',
     perfil: 'Tu cuenta en PawsApp'
   };
   document.getElementById('tagline').textContent = taglines[state.tab];
+  document.querySelector('header.top').style.display = (state.tab==='inicio') ? 'none' : 'flex';
+  document.getElementById('fab').style.display = (['mascotas','vacunas','calendario','perfil'].includes(state.tab) || (state.tab==='patrocinios' && state.isAdmin)) ? 'flex' : 'none';
 
   main.innerHTML = '';
-  if(state.adminViewingUserId && ['mascotas','vacunas','calendario'].includes(state.tab)){
+  if(state.adminViewingUserId && ['inicio','mascotas','vacunas','calendario','recordatorios'].includes(state.tab)){
     const viewedUser = state.users.find(u=>u.id===state.adminViewingUserId);
     const banner = document.createElement('div');
     banner.className = 'admin-banner';
@@ -689,6 +704,9 @@ function render(){
 
   const container = document.createElement('div');
   main.appendChild(container);
+  if(['mascotas','vacunas','calendario','patrocinios','recordatorios','mas'].includes(state.tab)){
+    container.innerHTML = '<button class="back-btn" onclick="goTab(\'inicio\')">← Inicio</button>';
+  }
 
   if(state.tab === 'mascotas') renderMascotas(container);
   if(state.tab === 'vacunas') renderVacunas(container);
@@ -696,6 +714,9 @@ function render(){
   if(state.tab === 'patrocinios') renderPatrocinios(container);
   if(state.tab === 'usuarios') renderUsuarios(container);
   if(state.tab === 'perfil') renderPerfil(container);
+  if(state.tab === 'inicio') renderInicio(container);
+  if(state.tab === 'recordatorios') renderRecordatorios(container);
+  if(state.tab === 'mas') renderMas(container);
 }
 
 function petPhotoHtml(pet, size){
@@ -924,7 +945,7 @@ function renderCalendario(main){
   main.innerHTML += `<div class="section-title">Próximas fechas</div><div id="event-list"></div>`;
   const list = document.getElementById('event-list');
   if(upcoming.length===0){
-    list.innerHTML = `<div class="empty"><div class="big">📅</div><h3>El calendario está vacío</h3><p>Agrega citas veterinarias, vacunas, paseos o reuniones.</p><button class="btn btn-primary" onclick="openEventForm()">Agregar evento</button></div>`;
+    list.innerHTML = `<div class="empty"><div class="big">📅</div><h3>La agenda está vacía</h3><p>Agrega citas veterinarias, vacunas, paseos o reuniones.</p><button class="btn btn-primary" onclick="openEventForm()">Agregar evento</button></div>`;
     return;
   }
   const icons = { 'Cita veterinaria':'🩺','Vacuna':'💉','Paseo':'🐕','Reunión':'🤝' };
@@ -1024,7 +1045,7 @@ const SPONSOR_CATEGORIES = {
 function renderPatrocinios(main){
   if(!state.sponsorFilter) state.sponsorFilter = 'Todos';
   main.innerHTML += `
-    <div class="section-title">Negocios patrocinadores</div>
+    <div class="section-title">Servicios</div>
     <div class="chip-filters" id="chip-filters"></div>
     <div id="sponsor-list"></div>`;
 
@@ -1041,7 +1062,7 @@ function renderPatrocinios(main){
   const filtered = state.sponsorFilter==='Todos'? state.sponsors : state.sponsors.filter(s=>s.category===state.sponsorFilter);
 
   if(state.sponsors.length===0){
-    list.innerHTML = `<div class="empty"><div class="big">🏪</div><h3>Sin anuncios todavía</h3><p>${state.isAdmin? 'Agrega veterinarias, pet-shops u otros negocios locales de confianza.':'Todavía no hay negocios patrocinadores publicados.'}</p>${state.isAdmin? `<button class="btn btn-primary" onclick="openSponsorForm()">Agregar negocio</button>`:''}</div>`;
+    list.innerHTML = `<div class="empty"><div class="big">🏪</div><h3>Sin servicios todavía</h3><p>${state.isAdmin? 'Agrega veterinarias, pet-shops u otros negocios locales de confianza.':'Todavía no hay servicios publicados.'}</p>${state.isAdmin? `<button class="btn btn-primary" onclick="openSponsorForm()">Agregar negocio</button>`:''}</div>`;
     return;
   }
   if(filtered.length===0){
@@ -1080,7 +1101,7 @@ function openSponsorForm(id){
   const s = id? state.sponsors.find(x=>x.id===id) : null;
   showModal(`
     <button class="close-x" onclick="closeModal()">✕</button>
-    <h3>${s?'Editar negocio':'Nuevo negocio patrocinador'}</h3>
+    <h3>${s?'Editar negocio':'Nuevo servicio'}</h3>
     <div class="field"><label>Nombre del negocio</label><input id="s-name" value="${s?escapeAttr(s.name):''}" placeholder="Ej: Veterinaria Los Amigos"></div>
     <div class="field"><label>Categoría</label>
       <select id="s-category">
@@ -1202,8 +1223,8 @@ function renderPerfil(main){
         <strong style="color:var(--ink)">Resumen de tu cuenta</strong><br>
         🐾 ${state.pets.length} mascota${state.pets.length===1?'':'s'}<br>
         💉 ${state.vaccines.length} vacuna${state.vaccines.length===1?'':'s'} registrada${state.vaccines.length===1?'':'s'}<br>
-        📅 ${state.events.length} evento${state.events.length===1?'':'s'} en el calendario<br>
-        🏪 ${state.sponsors.length} negocio${state.sponsors.length===1?'':'s'} patrocinador${state.sponsors.length===1?'':'es'}
+        📅 ${state.events.length} evento${state.events.length===1?'':'s'} en la agenda<br>
+        🏪 ${state.sponsors.length} negocio${state.sponsors.length===1?'':'s'} en Servicios
       </div>
     </div>
     <div class="card" style="text-align:center;">
@@ -1267,6 +1288,138 @@ async function deleteAccount(){
   alert('Tu cuenta fue eliminada.');
   location.reload();
 }
+// ---------- Navegación e Inicio (mosaicos) ----------
+function goTab(t){ state.tab = t; render(); window.scrollTo(0,0); }
+
+const _S = inner => `<svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+const HOME_ICONS = {
+  mascotas: `<svg width="40" height="40" viewBox="0 0 48 48" fill="#fff" aria-hidden="true"><ellipse cx="24" cy="31" rx="11" ry="9"/><ellipse cx="10" cy="22" rx="4.5" ry="6"/><ellipse cx="38" cy="22" rx="4.5" ry="6"/><ellipse cx="18" cy="12" rx="4.5" ry="6.5"/><ellipse cx="30" cy="12" rx="4.5" ry="6.5"/></svg>`,
+  vacunas: _S('<path d="M31 6l11 11M35 10l-5 5M37 12L20 29l-8 3 3-8 17-17zM15 33l-8 8M24 20l5 5"/>'),
+  calendario: _S('<rect x="6" y="9" width="36" height="33" rx="6"/><path d="M6 19h36M15 5v8M33 5v8M15 27h4M22 27h4M29 27h4M15 34h4M22 34h4"/>'),
+  recordatorios: _S('<path d="M24 6v4M12 34V22a12 12 0 0 1 24 0v12l4 4H8z"/><path d="M19 42a5 5 0 0 0 10 0"/>'),
+  patrocinios: _S('<path d="M6 20l4-12h28l4 12M6 20a6 6 0 0 0 12 0 6 6 0 0 0 12 0 6 6 0 0 0 12 0M10 25v17h28V25M20 42V32h8v10"/>'),
+  comunidad: _S('<circle cx="24" cy="14" r="6"/><circle cx="9" cy="20" r="4.5"/><circle cx="39" cy="20" r="4.5"/><path d="M13 40v-4a11 11 0 0 1 22 0v4zM2 36v-3a7 7 0 0 1 7-7M46 36v-3a7 7 0 0 0-7-7"/>'),
+  mas: _S('<path d="M4 30h8l8 6h12a4 4 0 0 0 0-8H22M24 26c-8-6-9-12-4-14 3-1 4 1 4 2 0-1 1-3 4-2 5 2 4 8-4 14zM12 36l-8-2"/>')
+};
+
+function renderInicio(main){
+  const tiles = [
+    ['mascotas','Mascotas','#7B4FD6'],
+    ['vacunas','Vacunas','#0E9AB0'],
+    ['calendario','Agenda','#2F6BFF'],
+    ['recordatorios','Recordatorios','#2E9A3A'],
+    ['patrocinios','Servicios','#E07B00'],
+    ['comunidad','Comunidad','#E8467C'],
+    ['mas','Más','#5B6B88']
+  ];
+  main.innerHTML += `
+    <div class="home-hero">
+      <div class="logo-mark" style="width:84px;height:84px;border-radius:50%;margin:0 auto 6px;">
+        <svg width="62" height="62" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="30" cy="26" rx="10" ry="13" fill="#1D63A6"/>
+          <ellipse cx="70" cy="26" rx="10" ry="13" fill="#1D63A6"/>
+          <ellipse cx="12" cy="52" rx="9" ry="11.5" fill="#F0932B"/>
+          <ellipse cx="88" cy="52" rx="9" ry="11.5" fill="#F0932B"/>
+          <path d="M50 42c-16 0-28 12-28 26 0 11 9 18 28 18s28-7 28-18c0-14-12-26-28-26z" fill="#1D63A6"/>
+          <rect x="42" y="55" width="16" height="22" rx="8" fill="#FFFFFF"/>
+          <path d="M36 70a14 14 0 0 0 28 0" stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <line x1="50" y1="84" x2="50" y2="90" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="brand-name" style="font-size:40px;"><span class="paws">Paws</span><span class="app">App</span></h1>
+      <div class="tag">CONECTA · CUIDA · DISFRUTA</div>
+    </div>
+    <div class="tiles">
+      ${tiles.map(([k,label,color])=>`<button class="tile${k==='mas'?' wide':''}" style="background:${color}" onclick="${k==='comunidad'?'openComunidad()':`goTab('${k}')`}">${HOME_ICONS[k]}${label}</button>`).join('')}
+    </div>`;
+}
+
+// ---------- Recordatorios ----------
+function daysUntil(d){
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(d+'T00:00:00') - t) / 86400000);
+}
+function dayLabel(n){
+  if(n < 0) return `Hace ${-n} día${n===-1?'':'s'}`;
+  if(n === 0) return 'Hoy';
+  if(n === 1) return 'Mañana';
+  return `En ${n} días`;
+}
+function renderRecordatorios(main){
+  const petName = id => { const p = state.pets.find(x=>x.id===id); return p ? p.name : ''; };
+  // vacunas con próxima dosis, sin contar las que ya tienen un registro más reciente de la misma vacuna
+  const vax = state.vaccines
+    .filter(v=>v.nextDose)
+    .filter(v=>!state.vaccines.some(o=>o.id!==v.id && o.petId===v.petId && (o.name||'').trim().toLowerCase()===(v.name||'').trim().toLowerCase() && o.dateApplied > v.dateApplied))
+    .map(v=>({v, n:daysUntil(v.nextDose)}))
+    .sort((a,b)=>a.n-b.n);
+  const evs = state.events.map(e=>({e, n:daysUntil(e.date)})).filter(x=>x.n>=0).sort((a,b)=>a.n-b.n).slice(0,6);
+  const icons = { 'Cita veterinaria':'🩺','Vacuna':'💉','Paseo':'🐕','Reunión':'🤝' };
+
+  let html = '<div class="section-title">Vacunas</div>';
+  if(vax.length===0){
+    html += '<div class="card"><div class="empty" style="padding:14px 10px;"><p style="margin:0;">No hay próximas dosis registradas.</p></div></div>';
+  }else{
+    html += vax.map(({v,n})=>`
+      <div class="card event-card">
+        <div class="vax-icon ${n<0?'due':''}">${n<0?'⚠️':'💉'}</div>
+        <div style="flex:1;">
+          <div class="event-title">${escapeHtml(v.name)}${petName(v.petId)? ' · '+escapeHtml(petName(v.petId)) : ''}</div>
+          <div class="event-sub">${n<0?'Venció':'Vence'} el ${formatDate(v.nextDose)}</div>
+        </div>
+        <span class="rem-chip ${n<0?'due':(n<=14?'soon':'')}">${dayLabel(n)}</span>
+      </div>`).join('');
+  }
+  html += '<div class="section-title" style="margin-top:16px;">Citas</div>';
+  if(evs.length===0){
+    html += '<div class="card"><div class="empty" style="padding:14px 10px;"><p style="margin:0;">No tienes citas próximas en la agenda.</p></div></div>';
+  }else{
+    html += evs.map(({e,n})=>`
+      <div class="card event-card">
+        <div class="vax-icon">${icons[e.type]||'📌'}</div>
+        <div style="flex:1;">
+          <div class="event-title">${escapeHtml(e.title)}</div>
+          <div class="event-sub">${formatDate(e.date)}${e.type? ' · '+escapeHtml(e.type):''}</div>
+        </div>
+        <span class="rem-chip ${n<=3?'soon':''}">${dayLabel(n)}</span>
+      </div>`).join('');
+  }
+  html += `
+    <div style="margin-top:16px;">
+      <button class="btn btn-primary btn-block" id="notif-btn" onclick="toggleNotifications()">🔔 Activar notificaciones</button>
+      <div class="auth-msg" id="notif-msg" style="text-align:center;"></div>
+    </div>`;
+  main.innerHTML += html;
+  refreshNotifButton();
+}
+
+// ---------- Más ----------
+function renderMas(main){
+  main.innerHTML += `
+    <div class="section-title">Más opciones</div>
+    <button class="menu-row" onclick="window.open('mailto:PawsApp.rd@gmail.com','_self')"><span class="ic">💬</span>Ayuda y contacto</button>
+    <button class="menu-row" onclick="window.open('politica-de-privacidad.html','_blank')"><span class="ic">🔒</span>Política de privacidad</button>
+    <button class="menu-row" onclick="openAcerca()"><span class="ic">🐾</span>Acerca de PawsApp</button>
+    <button class="menu-row danger" onclick="deleteAccount()"><span class="ic">🗑️</span>Eliminar mi cuenta</button>`;
+}
+function openAcerca(){
+  showModal(`
+    <button class="close-x" onclick="closeModal()">✕</button>
+    <h3>Acerca de PawsApp</h3>
+    <p style="font-size:14px; line-height:1.6; color:var(--muted); margin:0 0 14px;">PawsApp te ayuda a llevar la cartilla de vacunas, las citas y los recordatorios de tus mascotas en un solo lugar.</p>
+    <p style="font-size:13px; color:var(--muted); margin:0;">Contacto: PawsApp.rd@gmail.com</p>`);
+}
+
+// ---------- Comunidad ----------
+function openComunidad(){
+  showModal(`
+    <button class="close-x" onclick="closeModal()">✕</button>
+    <h3>Únete a la comunidad</h3>
+    <p style="font-size:14px; line-height:1.5; color:var(--muted); margin:0 0 16px;">Consejos de cuidado, novedades de la app y mascotas de otros usuarios.</p>
+    <button class="menu-row" onclick="window.open('https://www.instagram.com/pawsapp.rd/','_blank','noopener')"><span class="ic">📸</span>Instagram · @pawsapp.rd</button>
+    <button class="menu-row" onclick="window.open('https://www.tiktok.com/@pawsapp.rd','_blank','noopener')"><span class="ic">🎵</span>TikTok · @pawsapp.rd</button>`);
+}
+
 // ---------- Modal helpers ----------
 function showModal(html){
   document.getElementById('modal').innerHTML = html;
