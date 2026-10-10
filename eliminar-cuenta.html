@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Eliminar cuenta – PawsApp</title>
+<link rel="icon" href="icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Karla:wght@400;500;700&display=swap');
+:root{
+  --bg:#EAF2FA; --surface:#FFFFFF; --ink:#17233B; --muted:#53647C;
+  --primary:#1D63A6; --primary-soft:#DEEBF8; --line:#D6E4F0; --alert:#C1502E;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:'Karla',system-ui,sans-serif; line-height:1.6; font-size:16px;}
+main{max-width:640px; margin:0 auto; padding:28px 20px 48px;}
+h1,h2,.brand{font-family:'Baloo 2',system-ui,sans-serif; line-height:1.2;}
+.brand{font-size:24px; font-weight:700; margin:0 0 22px;}
+.brand .paws{color:#17233B;} .brand .app{color:#6BAAE0;}
+h1{font-size:30px; margin:0 0 10px; color:var(--primary);}
+h2{font-size:20px; margin:0 0 8px; color:var(--primary);}
+p{margin:0 0 12px;}
+.lead{color:var(--muted); font-size:17px; margin-bottom:24px;}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px;}
+ol,ul{margin:0; padding-left:22px;}
+li{margin-bottom:6px;}
+.btn{display:inline-block; background:var(--primary); color:#fff; text-decoration:none; font-weight:700; padding:12px 18px; border-radius:10px; margin-top:6px;}
+.btn:focus-visible,a:focus-visible{outline:3px solid #F0932B; outline-offset:2px;}
+.note{font-size:14px; color:var(--muted);}
+a{color:var(--primary);}
+</style>
+</head>
+<body>
+<main>
+  <p class="brand"><span class="paws">Paws</span><span class="app">App</span></p>
+
+  <h1>Eliminar tu cuenta de PawsApp</h1>
+  <p class="lead">Puedes pedir que borremos tu cuenta y todos tus datos cuando quieras, tengas o no la app instalada.</p>
+
+  <section class="card">
+    <h2>Si tienes la app</h2>
+    <ol>
+      <li>Abre PawsApp e inicia sesión.</li>
+      <li>Ve a la pestaña <strong>Perfil</strong>.</li>
+      <li>Toca <strong>Eliminar mi cuenta</strong>.</li>
+      <li>Escribe <strong>ELIMINAR</strong> para confirmar.</li>
+    </ol>
+    <p style="margin-top:12px;">La cuenta se borra al instante.</p>
+  </section>
+
+  <section class="card">
+    <h2>Si ya no tienes la app</h2>
+    <p>Escríbenos desde el correo con el que creaste tu cuenta y pide que la eliminemos. Revisamos y borramos tu cuenta en un máximo de 7 días.</p>
+    <a class="btn" href="mailto:PawsApp.rd@gmail.com?subject=Solicitud%20para%20eliminar%20mi%20cuenta%20de%20PawsApp&amp;body=Quiero%20que%20eliminen%20mi%20cuenta%20de%20PawsApp%20y%20todos%20mis%20datos.%0A%0ACorreo%20de%20mi%20cuenta%3A%20">Enviar solicitud por correo</a>
+    <p class="note" style="margin-top:12px;">Correo de contacto: <a href="mailto:PawsApp.rd@gmail.com">PawsApp.rd@gmail.com</a></p>
+  </section>
+
+  <section class="card">
+    <h2>Qué se elimina</h2>
+    <ul>
+      <li>Tu perfil: nombre, correo, teléfono, dirección y foto.</li>
+      <li>Tus mascotas, con sus fotos y datos de chip.</li>
+      <li>Tus vacunas registradas y las fotos de las tarjetas.</li>
+      <li>Tus eventos del calendario.</li>
+      <li>Tu suscripción a notificaciones.</li>
+    </ul>
+    <p style="margin-top:12px;">Esta acción es permanente y no se puede deshacer.</p>
+  </section>
+
+  <p class="note"><a href="./">Volver a PawsApp</a></p>
+</main>
+</body>
+</html>
