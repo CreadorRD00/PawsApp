@@ -1212,6 +1212,9 @@ function renderPerfil(main){
         Escríbenos si tienes una pregunta o necesitas soporte
       </div>
       <button class="btn btn-outline btn-block" onclick="window.open('mailto:PawsApp.rd@gmail.com','_self')">✉️ PawsApp.rd@gmail.com</button>
+            </div>
+    <div style="text-align:center; margin:4px 0 12px;">
+      <button class="btn btn-outline btn-sm" style="color:var(--alert); border-color:var(--alert);" onclick="deleteAccount()">Eliminar mi cuenta</button>
     </div>`;
   refreshNotifButton();
 }
@@ -1254,7 +1257,16 @@ async function saveProfile(){
   state.profile = { ...state.profile, name, phone, address, photo };
   closeModal(); render();
 }
-
+async function deleteAccount(){
+  const txt = prompt('Esto borrará tu cuenta, tus mascotas, vacunas y eventos de forma permanente.\n\nEscribe ELIMINAR para confirmar:');
+  if(txt === null) return;
+  if(txt.trim().toUpperCase() !== 'ELIMINAR'){ alert('No se eliminó la cuenta.'); return; }
+  const { error } = await sb.rpc('delete_my_account');
+  if(error){ alert('No se pudo eliminar la cuenta: ' + error.message); return; }
+  await sb.auth.signOut({ scope: 'local' });
+  alert('Tu cuenta fue eliminada.');
+  location.reload();
+}
 // ---------- Modal helpers ----------
 function showModal(html){
   document.getElementById('modal').innerHTML = html;
