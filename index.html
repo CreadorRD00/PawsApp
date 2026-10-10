@@ -506,7 +506,7 @@ async function doRegister(){
   btn.disabled = true; btn.textContent = 'Creando cuenta…';
   const { data, error } = await sb.auth.signUp({
     email, password,
-    options: { data: { name } }
+        options: { data: { name }, emailRedirectTo: 'https://creadorrd00.github.io/PawsApp/' }
   });
   btn.disabled = false; btn.textContent = 'Crear cuenta';
   if(error){ errBox.textContent = traducirError(error.message); return; }
